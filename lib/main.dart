@@ -4,7 +4,11 @@ import 'package:provider/provider.dart';
 
 import 'bloc.dart';
 
-void main() => runApp(PocApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(PocApp());
+}
 
 class PocApp extends StatelessWidget {
   // This widget is the root of your application.

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:developer';
 
 import 'bloc.dart';
@@ -47,11 +47,27 @@ class _MyPocWidgetState extends State<PocWidget> {
           });
           return Scaffold(
             body: SafeArea(
-                child:
-                WebView(
+                child: InAppWebView(
                   initialUrl: initurl,
-                  javascriptMode: JavascriptMode.unrestricted,
-                )
+                  initialHeaders: {},
+                  onWebViewCreated: (InAppWebViewController controller) {
+                    //webView = controller;
+
+                    controller.addJavaScriptHandler(handlerName: "Print", callback: (args) {
+                      print("From the JavaScript side:");
+                      print(args);
+                      return args;
+                    });
+                  },
+                  onLoadStart: (InAppWebViewController controller, String url) {
+                  },
+                  onLoadStop: (InAppWebViewController controller, String url) {
+                  },
+                  onConsoleMessage: (InAppWebViewController controller, ConsoleMessage consoleMessage) {
+                    log("Console: ${consoleMessage.message}");
+                    showToast(consoleMessage.message);
+                  },
+                ),
             ),
           );
       /*
@@ -68,4 +84,12 @@ class _MyPocWidgetState extends State<PocWidget> {
     );
   }
 
+}
+void showToast(String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    backgroundColor: Colors.black,
+    toastLength: Toast.LENGTH_LONG,
+    gravity: ToastGravity.BOTTOM
+  );
 }
